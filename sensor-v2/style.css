@@ -1,0 +1,6 @@
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+	font-size: 82.5%;
+}
+
+label.labelui,button { display: inline-block; width: 140px; text-align: right; }​
