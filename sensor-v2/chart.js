@@ -3,7 +3,8 @@ var stddev = new Array(nvalues+1).join('0').split('').map(parseFloat);
 var sensors_data;
 var idx_data;
 var umbral;
-var nsensores;
+var porcentaje;
+//var nsensores;
 var sensores_habilitados;
 
 var ejex;
@@ -89,10 +90,11 @@ function init()
 		success: function(data)
 		{
 			umbral=parseFloat(data.umbral);
+			porcentaje=parseFloat(data.porcentaje);
 			nsensores=parseInt(data.nsensores);
 			sensores_habilitados=data.sensores_habilitados;
-			$('#umbral').val(umbral);
-			$('#nsensores').val(nsensores);
+			//$('#umbral').val(umbral);
+			//$('#nsensores').val(nsensores);
 		}
 	});
 
@@ -223,7 +225,8 @@ function init()
 
 			var marker = {};
 			
-			if(data[idx[j]]>(avg[j]+umbral+stddev[j]) || data[idx[j]]<(avg[j]-umbral-stddev[j]))
+			//if(data[idx[j]]>(avg[j]+umbral+stddev[j]) || data[idx[j]]<(avg[j]-umbral-stddev[j]))
+			if(data[idx[j]]>(avg[j]+umbral+(porcentaje*avg[j])/100.0) || data[idx[j]]<(avg[j]-umbral-(porcentaje*avg[j])/100.0))
 			{
 				marker["fillColor"] = 'red';
 			}

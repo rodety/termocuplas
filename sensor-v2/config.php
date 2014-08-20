@@ -11,6 +11,7 @@
 		<script src="jquery-ui.js"></script>
 		<script>
 			var umbral;
+			var porcentaje;
 			var nsensores;
 			var sensores_habilitados;
 
@@ -36,9 +37,11 @@
 					success: function(data)
 					{
 						umbral=parseFloat(data.umbral);
+						porcentaje=parseFloat(data.porcentaje);
 						nsensores=parseInt(data.nsensores);
 						sensores_habilitados=data.sensores_habilitados;
 						$('#umbral').val(umbral);
+						$('#porcentaje').val(porcentaje);
 					}
 				});
 			
@@ -91,11 +94,26 @@
 					}
 				?>
 				</div>
-				<p>
-					<span style="font-size:14px;">Umbral:</span><br /><br />
-					<label for="umbral">Valor:</label>
-					<input type="text" id="umbral" name="umbral" style="text-align: right; padding-right:5px;" value=""><br />
-				</p>
+				
+				<table style="width:60%">
+				<tr>
+				<td>
+					<p>
+						<span style="font-size:14px;">Umbral:</span><br /><br />
+						<label for="umbral">Valor:</label>
+						<input type="text" id="umbral" name="umbral" style="text-align: right; padding-right:5px;" value=""><br />
+					</p>
+				</td>
+				<td>
+					<p>
+						<span style="font-size:14px;">Porcentaje:</span><br /><br />
+						<label for="umbral">Valor:</label>
+						<input type="text" id="porcentaje" name="porcentaje" style="text-align: right; padding-right:5px;" value=""><br />
+					</p>
+				</td> 
+				</tr>
+				</table>
+				
 				<button>Guardar</button> 
 			</div>
 			</form>

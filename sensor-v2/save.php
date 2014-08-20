@@ -27,13 +27,15 @@
 		fclose($handle);
 	}
 
-	foreach($_POST as $key=>$value)
+	/*foreach($_POST as $key=>$value)
 	{
 		if(substr($key,0,6) == 'sensor')
 			echo substr($key,6)." ".$value." <br>";
 		else if(substr($key,0,6) == 'umbral')
 			echo $key." ".$value." <br>";
-	}
+		else if(substr($key,0,6) == 'porcen')
+			echo $key." ".$value." <br>";
+	}*/
 	
 	if(!empty($_POST))
 	{
@@ -60,8 +62,9 @@
 			echo $Exception->getMessage();
 		}
 
-		$um=isset($_POST['umbral']) ? (float)$_POST['umbral'] : 10.0;
-		$arr = array('umbral'=>$um);
+		$um=isset($_POST['umbral']) ? (float)$_POST['umbral'] : 0.0;
+		$pr=isset($_POST['porcentaje']) ? (float)$_POST['porcentaje'] : 0.0;
+		$arr = array('umbral'=>$um,'porcentaje'=>$pr);
 		$data = array('parametros_sensor'=>$arr);
 		write_ini($data,'config.ini');
 	}

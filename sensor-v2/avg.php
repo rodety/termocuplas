@@ -1,7 +1,6 @@
 <?php		   
 	require("database.php");
 	$arr = parse_ini_file($config);
-	//$nsensores = $arr['nsensores'];
 
 	$zoom=isset($_GET['zoom']) ? $_GET['zoom'] : 'dia';
 	$fecha=isset($_GET['fecha']) ? $_GET['fecha'] : '2014-01-01';
@@ -94,7 +93,7 @@
 
 		for($j = 0; $j<$numHabilitados; $j++)
 		{
-			$stddev[$idxs[$j]]*=(1/floatval($numHabilitados-1));
+			$stddev[$idxs[$j]]*=(1/floatval($numHabilitados));
 			$stddev[$idxs[$j]]=sqrt($stddev[$idxs[$j]]);
 		}
 
