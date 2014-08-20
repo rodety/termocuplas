@@ -4,7 +4,7 @@ var sensors_data;
 var idx_data;
 var umbral;
 var porcentaje;
-//var nsensores;
+var nsensores;
 var sensores_habilitados;
 
 var ejex;
@@ -66,7 +66,6 @@ function init()
 		{
 			fecha: $('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
 			zoom: zoom,
-			nsensor: nsensor,
 			hora: hora
 		},
 		success: function(data)
@@ -93,8 +92,6 @@ function init()
 			porcentaje=parseFloat(data.porcentaje);
 			nsensores=parseInt(data.nsensores);
 			sensores_habilitados=data.sensores_habilitados;
-			//$('#umbral').val(umbral);
-			//$('#nsensores').val(nsensores);
 		}
 	});
 
@@ -132,88 +129,65 @@ function init()
         },
 	});
 
-	if(nsensor==-1)
-	{
-		var mainOptions={
-			chart:{
-				renderTo: 'container'
+	var mainOptions={
+		chart:{
+			renderTo: 'container'
+		},
+		title: {
+			text: 'Temperaturas por Sensor, día: '+$('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
+			x: -20 //center
+		},
+		subtitle: {
+			text: titulo,
+			x: -20
+		},
+		xAxis: {
+			title:{
+				text: ejex
 			},
+			gridLineWidth:0.5
+		},
+		yAxis: {
 			title: {
-				text: 'Temperaturas por Sensor, día: '+$('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
-				x: -20 //center
+				text: 'Grados Celsius (°C)'
 			},
-			subtitle: {
-				text: titulo,
-				x: -20
-			},
-			xAxis: {
-				title:{
-					text: ejex
-				},
-				gridLineWidth:0.5
-			},
-			yAxis: {
-				title: {
-					text: 'Grados Celsius (°C)'
-				},
-				plotLines: [{
-					value: 0,
-					width: 1,
-					color: '#808080'
-				}]
-			},
-			tooltip: {
-				valueSuffix: '°C'
-			},
-			legend: {
-				layout: 'vertical',
-				align: 'right',
-				verticalAlign: 'middle',
-				borderWidth: 0
-			}
-		};
+			plotLines: [{
+				value: 0,
+				width: 1,
+				color: '#808080'
+			}]
+		},
+		tooltip: {
+			valueSuffix: '°C'
+		},
+		legend: {
+			layout: 'vertical',
+			align: 'right',
+			verticalAlign: 'middle',
+			borderWidth: 0
+		}
+	};
 
-		var chart = new Highcharts.Chart(mainOptions);
-	}
+	var chart = new Highcharts.Chart(mainOptions);
 
 	for(i = 1; i < nsensores+1; i++)
 	{
-		if(nsensor!=-1)
-			i=nsensor;
-
 		var data = sensors_data[i-1];
 		var idx = idx_data[i-1];
+		var dataAvg = [];
 
-		if(nsensor==-1)
+		for(j = 0; j < data.length; j++)
 		{
-			var dataAvg = [];
-
-			for(j = 0; j < data.length; j++)
-			{
-				var mp = {};
-				mp['x'] = idx[j];
-				mp['y'] = data[j];
-
-				/*var marker = {};
-				
-				if(data[j]>(avg[j]+umbral+stddev[j]) || data[j]<(avg[j]-umbral-stddev[j]))
-				{
-					marker["fillColor"] = 'red';
-				}
-				else
-				{
-					marker["fillColor"] = 'blue';
-				}
-
-				mp["marker"] = marker;*/
-				dataAvg.push(mp);
-			}
-		
-			chart.addSeries({
-				name: 'Sensor '+sensores_habilitados[i-1],
-				data: dataAvg
-			});
+			var mp = {};
+			mp['x'] = idx[j];
+			mp['y'] = data[j];
+			dataAvg.push(mp);
 		}
+	
+		chart.addSeries({
+			name: 'Sensor '+sensores_habilitados[i-1],
+			data: dataAvg
+		});
 
 		var dataColor = [];
 
@@ -224,8 +198,7 @@ function init()
 			mp['y'] = data[j];
 
 			var marker = {};
-			
-			//if(data[idx[j]]>(avg[j]+umbral+stddev[j]) || data[idx[j]]<(avg[j]-umbral-stddev[j]))
+
 			if(data[idx[j]]>(avg[j]+umbral+(porcentaje*avg[j])/100.0) || data[idx[j]]<(avg[j]-umbral-(porcentaje*avg[j])/100.0))
 			{
 				marker["fillColor"] = 'red';
@@ -285,8 +258,5 @@ function init()
 			};
 
 		$('#container'+sensores_habilitados[i-1]).highcharts(options);
-		
-		if(nsensor!=-1)
-			break;
 	}
 }

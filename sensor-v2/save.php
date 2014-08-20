@@ -27,16 +27,6 @@
 		fclose($handle);
 	}
 
-	/*foreach($_POST as $key=>$value)
-	{
-		if(substr($key,0,6) == 'sensor')
-			echo substr($key,6)." ".$value." <br>";
-		else if(substr($key,0,6) == 'umbral')
-			echo $key." ".$value." <br>";
-		else if(substr($key,0,6) == 'porcen')
-			echo $key." ".$value." <br>";
-	}*/
-	
 	if(!empty($_POST))
 	{
 		try

@@ -21,11 +21,8 @@
 			}
 
 			var nvalues;
-
 			var zoom;
 			zoom='<?php echo isset($_GET['zoom']) ? $_GET['zoom'] : 'dia'; ?>';
-			var nsensor;
-			nsensor=<?php echo isset($_GET['nsensor']) ? $_GET['nsensor'] : '-1'; ?>;
 			var hora;
 			hora=<?php echo isset($_GET['hora']) ? $_GET['hora'] : '0'; ?>;
 
@@ -112,10 +109,6 @@
 							<input type="hidden" name="zoom" value="hora">
 						</p>
 						<p>
-							<label for="spinSensor" class="labelui">Sensor:</label>
-							<input id="spinSensor" name="nsensor" value=<?php echo isset($_GET['nsensor']) ? $_GET['nsensor'] : 1; ?>>
-						</p>
-						<p>
 							<label for="spinHora" class="labelui">Hora:</label>
 							<input id="spinHora" name="hora" value=<?php echo isset($_GET['hora']) ? $_GET['hora'] : 0; ?>>
 							<div align="center">
@@ -163,32 +156,15 @@
 				<button onclick="javascript:location.href='config.php'">Configuración</button>
 			</div>
 		<br />
-		<?php	
-			$nsensor=isset($_GET['nsensor']) ? $_GET['nsensor'] : -1;
-		?>
-		
-		<?php if($nsensor==-1) {?>
-			<div id="container" style="min-width: 310px; height: 400px; width: 96%; align: center; margin: 0 auto"></div>
-		<?php } ?>
-
+		<div id="container" style="min-width: 310px; height: 400px; width: 96%; align: center; margin: 0 auto"></div>
 		<?php
 			try
 			{
 				$statement = $conn->prepare("select * from Sensor where habilitado=true");
 				$statement->execute();
-
-				$cont=1;
 				while($row = $statement->fetch())
 				{
-					if($nsensor!=-1)
-						$cont=$nsensor;
-
 					print "<div id=\"container$row[0]\" style=\"min-width: 310px; height: 400px; width: 96%; align: center; margin: 0 auto\"></div>\n";
-
-					if($nsensor!=-1)
-						break;
-
-					$cont++;
 				}
 			}
 			catch(PDOException $Exception)
