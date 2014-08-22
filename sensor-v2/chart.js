@@ -1,24 +1,24 @@
 var avg = new Array(nvalues+1).join('0').split('').map(parseFloat);
 var stddev = new Array(nvalues+1).join('0').split('').map(parseFloat);
 var sensors_data;
-var idx_data;
 var umbral;
 var porcentaje;
+var refresco;
 var nsensores;
 var sensores_habilitados;
 
 var ejex;
 var titulo;
 
-if(zoom=='dia')
+if(intervalo==60)
 {
 	ejex='Horas';
 	titulo='Promedio por hora';
 }
-else if(zoom=='hora')
+else
 {
 	ejex='Minutos';
-	titulo='Promedio por minuto';
+	titulo='Promedio por intervalo';
 }
 
 function checkVisible()
@@ -65,13 +65,11 @@ function init()
 		data:
 		{
 			fecha: $('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
-			zoom: zoom,
-			hora: hora
+			intervalo: intervalo,
 		},
 		success: function(data)
 		{
 			sensors_data=data.data;
-			idx_data=data.idx;
 
 			for(j = 0; j<data.avg.length; j++)
 			{
@@ -90,25 +88,36 @@ function init()
 		{
 			umbral=parseFloat(data.umbral);
 			porcentaje=parseFloat(data.porcentaje);
+			refresco=parseInt(data.refresco);
 			nsensores=parseInt(data.nsensores);
 			sensores_habilitados=data.sensores_habilitados;
 		}
 	});
 
-	$("#spinHora").spinner({
+	$("#spinIntervalo").spinner({
         numberFormat: "d2",
+        step: 5,
         spin: function(event, ui)
         {
-            if(ui.value > 23)
+           if(ui.value > 60)
             {
-                $(this).spinner("value", 0);
+                $(this).spinner("value",5);
                 return false;
             }
-            else if (ui.value < 0)
+            else if(ui.value < 5)
             {
-                $(this).spinner("value", 23);
+                $(this).spinner("value",30);
                 return false;
             }
+            else if(60%ui.value!=0)
+            {
+				var c=ui.value;
+				while(60%c!=0)
+					c+=5;
+
+				$(this).spinner("value",c);
+                return false;
+			}
         },
 	});
 
@@ -131,7 +140,8 @@ function init()
 
 	var mainOptions={
 		chart:{
-			renderTo: 'container'
+			renderTo: 'container',
+			zoomType: 'x'
 		},
 		title: {
 			text: 'Temperaturas por Sensor, día: '+$('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
@@ -145,6 +155,7 @@ function init()
 			title:{
 				text: ejex
 			},
+			type: 'datetime',
 			gridLineWidth:0.5
 		},
 		yAxis: {
@@ -158,7 +169,8 @@ function init()
 			}]
 		},
 		tooltip: {
-			valueSuffix: '°C'
+			headerFormat: '<b>{series.name}</b><br>',
+			pointFormat: 'Hora: {point.x:%H:%M}, <b>{point.y:.2f} °C</b>'
 		},
 		legend: {
 			layout: 'vertical',
@@ -173,33 +185,40 @@ function init()
 	for(i = 1; i < nsensores+1; i++)
 	{
 		var data = sensors_data[i-1];
-		var idx = idx_data[i-1];
+		var dataData = [];
+		
+		for(j = 0; j < data.length; j++)
+		{
+			var mp = {};
+			mp['x'] = data[j][0];
+			mp['y'] = data[j][1];
+			dataData.push(mp);
+		}
+		
+		var d = $("#datepicker").val();	
+		chart.addSeries({
+			name: 'Sensor '+sensores_habilitados[i-1],
+			pointStart: Date.UTC((Number(d.split("-")[0])), (Number(d.split("-")[1]) - 1), (Number(d.split("-")[2]))),
+			pointInterval: 3600 * 1000,
+			data: dataData
+		});
+
+		var dataColor = [];
 		var dataAvg = [];
 
 		for(j = 0; j < data.length; j++)
 		{
 			var mp = {};
-			mp['x'] = idx[j];
-			mp['y'] = data[j];
-			dataAvg.push(mp);
-		}
-	
-		chart.addSeries({
-			name: 'Sensor '+sensores_habilitados[i-1],
-			data: dataAvg
-		});
-
-		var dataColor = [];
-
-		for(j = 0; j < data.length; j++)
-		{
-			var mp = {};
-			mp['x'] = idx[j];
-			mp['y'] = data[j];
+			mp['x'] = data[j][0];
+			mp['y'] = data[j][1];
+			
+			var mpavg = {};
+			mpavg['x'] = data[j][0];
+			mpavg['y'] = avg[j];
 
 			var marker = {};
 
-			if(data[idx[j]]>(avg[j]+umbral+(porcentaje*avg[j])/100.0) || data[idx[j]]<(avg[j]-umbral-(porcentaje*avg[j])/100.0))
+			if(data[j][1]>(avg[j]+umbral+(porcentaje*avg[j])/100.0) || data[j][1]<(avg[j]-umbral-(porcentaje*avg[j])/100.0))
 			{
 				marker["fillColor"] = 'red';
 			}
@@ -210,9 +229,13 @@ function init()
 
 			mp["marker"] = marker;
 			dataColor.push(mp);
+			dataAvg.push(mpavg);
 		}
 
 		var options = {
+				chart:{
+					zoomType: 'x'
+				},
 				title: {
 					text: 'Sensor: #'+ sensores_habilitados[i-1] +', día: '+$('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val(),
 					x: -20 //center
@@ -225,6 +248,7 @@ function init()
 					title:{
 						text: ejex
 					},
+					type: 'datetime',
 					gridLineWidth:0.5
 				},
 				yAxis: {
@@ -238,7 +262,8 @@ function init()
 					}]
 				},
 				tooltip: {
-					valueSuffix: '°C'
+					headerFormat: '<b>Promedio</b><br>',
+					pointFormat: 'Hora: {point.x:%H:%M}, <b>{point.y:.2f} °C</b>'
 				},
 				legend: {
 					layout: 'vertical',
@@ -249,10 +274,11 @@ function init()
 				series: [{
 					name: 'Sensor '+sensores_habilitados[i-1],
 					data: dataColor
-					//,color: 'blue'
 				},{
 					name: 'Promedio',
-					data: avg,
+					data: dataAvg,
+					pointStart: Date.UTC((Number(d.split("-")[0])), (Number(d.split("-")[1]) - 1), (Number(d.split("-")[2]))),
+					pointInterval: 3600 * 1000,
 					color: '#CED8F6'
 				}]
 			};

@@ -54,7 +54,8 @@
 
 		$um=isset($_POST['umbral']) ? (float)$_POST['umbral'] : 0.0;
 		$pr=isset($_POST['porcentaje']) ? (float)$_POST['porcentaje'] : 0.0;
-		$arr = array('umbral'=>$um,'porcentaje'=>$pr);
+		$rf=isset($_POST['refresco']) ? (float)$_POST['refresco'] : 0.0;
+		$arr = array('umbral'=>$um,'porcentaje'=>$pr,'refresco'=>$rf);
 		$data = array('parametros_sensor'=>$arr);
 		write_ini($data,'config.ini');
 	}

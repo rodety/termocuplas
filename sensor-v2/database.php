@@ -8,6 +8,9 @@
 	$nsensores = 0;
 	$sensores_habilitados = array();
 
+	$m = parse_ini_file($config);
+	$refresco = $m['refresco'];
+
 	try
 	{
 		$conn = new PDO("mysql:host=$host;dbname=$db",$user,$pass);

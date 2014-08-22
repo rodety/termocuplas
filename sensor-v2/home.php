@@ -15,21 +15,17 @@
 
 		<script src="jquery-ui.js"></script>
 		<script>
-			function refreshTime(timeout)
+			function refreshTime()
 			{
-				setInterval("init();",timeout);
+				init();
+				setInterval("init();",refresco*1000);
 			}
 
-			var nvalues;
-			var zoom;
-			zoom='<?php echo isset($_GET['zoom']) ? $_GET['zoom'] : 'dia'; ?>';
-			var hora;
-			hora=<?php echo isset($_GET['hora']) ? $_GET['hora'] : '0'; ?>;
+			var intervalo;
+			intervalo=<?php echo isset($_GET['intervalo']) ? $_GET['intervalo'] : 60; ?>;
 
-			if(zoom=='dia')
-				nvalues=24;
-			else if(zoom=='hora')
-				nvalues=60;
+			var nvalues;
+			nvalues=24*(60/intervalo);
 					
 			$(function() {
 				$.datepicker.regional['es'] = 
@@ -95,8 +91,8 @@
 
 		<script src="chart.js"></script>  
 	</head>
-	<body onload="javascript:refreshTime(30000);">
-		<span style="font-size:14px;">La página se refresca automáticamente cada 30 segundos.</span><br />
+	<body onload="javascript:refreshTime();">
+		<span style="font-size:14px;">La página se refresca automáticamente cada <?php echo $refresco; ?> segundos.</span><br />
 		<div align="center" style="padding: 0px;">
 			<span style="font-weight:bold; font-size:16px;">Opciones de visualización</span><br /><br />
 			<div style="border: 1px solid #d0d0d0; width:60%; padding: 5px 5px 5px 5px;">
@@ -106,11 +102,10 @@
 						<p>
 							<label for="datepicker" class="labelui">Fecha:</label>
 							<input type="text" id="datepicker" name='fecha' value="2014-01-01">
-							<input type="hidden" name="zoom" value="hora">
 						</p>
 						<p>
-							<label for="spinHora" class="labelui">Hora:</label>
-							<input id="spinHora" name="hora" value=<?php echo isset($_GET['hora']) ? $_GET['hora'] : 0; ?>>
+							<label for="spinIntervalo" class="labelui">Intervalo:</label>
+							<input id="spinIntervalo" name="intervalo" value=<?php echo isset($_GET['intervalo']) ? $_GET['intervalo'] : 60; ?>> minutos
 							<div align="center">
 								<button>Aplicar</button>
 								</form>
@@ -121,8 +116,6 @@
 					<span style="font-size:14px;">Seleccione los sensores que desee visualizar:</span><br /><br />
 					<div id="wrapper">
 						<?php
-							$arr = parse_ini_file($config);
-
 							try
 							{
 								$statement = $conn->prepare("select * from Sensor where habilitado=true");

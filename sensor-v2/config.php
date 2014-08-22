@@ -14,6 +14,7 @@
 			var porcentaje;
 			var nsensores;
 			var sensores_habilitados;
+			var refresco;
 
 			function checkVisible()
 			{
@@ -38,10 +39,12 @@
 					{
 						umbral=parseFloat(data.umbral);
 						porcentaje=parseFloat(data.porcentaje);
+						refresco=parseFloat(data.refresco);
 						nsensores=parseInt(data.nsensores);
 						sensores_habilitados=data.sensores_habilitados;
 						$('#umbral').val(umbral);
 						$('#porcentaje').val(porcentaje);
+						$('#refresco').val(refresco);
 					}
 				});
 			
@@ -94,7 +97,11 @@
 					}
 				?>
 				</div>
-				
+				<p>
+					<span style="font-size:14px;">Tiempo de refresco:</span><br /><br />
+					<label for="refresco">Segundos:</label>
+					<input type="text" id="refresco" name="refresco" style="text-align: right; padding-right:5px;" value=""><br />
+				</p>
 				<table style="width:60%">
 				<tr>
 				<td>
@@ -113,7 +120,6 @@
 				</td> 
 				</tr>
 				</table>
-				
 				<button>Guardar</button> 
 			</div>
 			</form>
