@@ -39,12 +39,12 @@
 			while($row = $statement->fetch())
 			{
 				$idSensor=(int)$row[0];
-				$query = $conn->prepare("UPDATE Sensor SET habilitado=? WHERE idSensor=?");
+				$query = $conn->prepare("UPDATE Sensor SET habilitado=:habilitado WHERE idSensor=:idSensor");
 
 				if(isset($_POST['sensor'.$row[0]]))
-					$query->execute(array(true,$idSensor));
+					$query->execute(array(':habilitado' => true,':idSensor' => $idSensor));
 				else
-					$query->execute(array(false,$idSensor));
+					$query->execute(array(':habilitado' => false,':idSensor' => $idSensor));
 			}
 		}
 		catch(PDOException $Exception)
