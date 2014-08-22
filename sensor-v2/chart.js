@@ -262,7 +262,7 @@ function init()
 					}]
 				},
 				tooltip: {
-					headerFormat: '<b>Promedio</b><br>',
+					headerFormat: '<b>{series.name}</b><br>',
 					pointFormat: 'Hora: {point.x:%H:%M}, <b>{point.y:.2f} °C</b>'
 				},
 				legend: {
