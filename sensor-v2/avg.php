@@ -55,7 +55,8 @@
 
 				$data[$i]=$rows;
 
-				for($j = 0; $j<$nvalues; $j++)
+				//for($j = 0; $j<$nvalues; $j++)
+				for($j = 0; $j<$statement->rowCount(); $j++)
 				{
 					$rowsavg[$j]+=$rows[$j][1];
 				}

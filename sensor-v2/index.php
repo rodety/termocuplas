@@ -19,7 +19,7 @@
 			alert("Alguno de los campos está vacío.");
 			return false;
 		}
-		else if(us == "root" && ps == "1234")
+		else if(us == "root" && ps == "1234"|| us == "ricardo" && ps == "ricardo" || us == "israel" && ps == "israel" )
 		{
 			alert("Bienvenido!");
 		}
