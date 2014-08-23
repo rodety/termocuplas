@@ -93,7 +93,9 @@
 	</head>
 	<body onload="javascript:refreshTime();">
 		<span style="font-size:14px;">La página se refresca automáticamente cada <?php echo $refresco; ?> segundos.</span><br />
-		<div align="center" style="padding: 0px;">
+		<table WIDTH=75%><tr><td VALIGN=TOP>
+		<img src="logo_ucsm.jpg" width="215px" height="235YYpx" alt="Logo UCSM"> </td>
+		<td> <div align="center" style="padding: 0px;">
 			<span style="font-weight:bold; font-size:16px;">Opciones de visualización</span><br /><br />
 			<div style="border: 1px solid #d0d0d0; width:60%; padding: 5px 5px 5px 5px;">
 				<div align="center">
@@ -147,7 +149,7 @@
 				</div>
 				<br />
 				<button onclick="javascript:location.href='config.php'">Configuración</button>
-			</div>
+			</div></td></tr></table>
 		<br />
 		<div id="container" style="min-width: 310px; height: 400px; width: 96%; align: center; margin: 0 auto"></div>
 		<?php
