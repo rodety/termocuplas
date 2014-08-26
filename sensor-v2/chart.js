@@ -1,5 +1,4 @@
 var avg = new Array(nvalues+1).join('0').split('').map(parseFloat);
-var stddev = new Array(nvalues+1).join('0').split('').map(parseFloat);
 var sensors_data;
 var umbral;
 var porcentaje;
@@ -74,7 +73,6 @@ function init()
 			for(j = 0; j<data.avg.length; j++)
 			{
 				avg[j]=data.avg[j];
-				stddev[j]=data.stddev[j];
 			}
 		}
 	});
@@ -193,7 +191,7 @@ function init()
 
 	for(i = 1; i < nsensores+1; i++)
 	{
-		var data = sensors_data[i-1];
+		var data = sensors_data[sensores_habilitados[i-1]-1];
 		var dataData = [];
 		
 		for(j = 0; j < data.length; j++)

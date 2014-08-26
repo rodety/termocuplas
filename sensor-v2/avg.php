@@ -8,14 +8,16 @@
 
 	try
 	{
-		$statement = $conn->prepare("select * from Sensor where habilitado=true");
+		$statement = $conn->prepare("select * from Sensor");
 		$statement->execute();
+		$nsens = $statement->rowCount();
+
 		$habilitados = array();
 
 		$numHabilitados=0;
 		while($row = $statement->fetch())
 		{
-			if($row[4])
+			if($row[4]=='1')
 			{
 				$habilitados[] = true;
 				$numHabilitados++;
@@ -23,13 +25,12 @@
 			else
 				$habilitados[] = false;
 		}
-							
+
 		$rowsavg=array_fill(0,$nvalues,null);
-		$stddev=array_fill(0,$nvalues,null);
 
 		$data = array();
 
-		for($i = 0; $i<$nsensores; $i++)
+		for($i = 0; $i<$nsens; $i++)
 		{
 			if($habilitados[$i]==true)
 			{
@@ -55,7 +56,6 @@
 
 				$data[$i]=$rows;
 
-				//for($j = 0; $j<$nvalues; $j++)
 				for($j = 0; $j<$statement->rowCount(); $j++)
 				{
 					$rowsavg[$j]+=$rows[$j][1];
@@ -67,22 +67,8 @@
 		{
 			$rowsavg[$j]/=$numHabilitados;
 		}
-		
-		for($i = 0; $i<$nsensores; $i++)
-		{
-			for($j = 0; $j<$numHabilitados; $j++)
-			{
-				$stddev[$j]+=($data[$i][$j][1]-$rowsavg[$j])*($data[$i][$j][1]-$rowsavg[$j]);
-			}
-		}
 
-		for($j = 0; $j<$numHabilitados; $j++)
-		{
-			$stddev[$j]*=(1/floatval($numHabilitados));
-			$stddev[$j]=sqrt($stddev[$j]);
-		}
-
-		$response = array('avg'=>$rowsavg,'stddev'=>$stddev,'data'=>$data);
+		$response = array('avg'=>$rowsavg,'data'=>$data);
 		print json_encode($response);
 	}
 	catch(PDOException $Exception)
