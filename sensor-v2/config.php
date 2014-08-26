@@ -119,6 +119,13 @@
 					</p>
 				</td> 
 				</tr>
+				<tr>
+					<td>Descargar Tabla Sensores</td><td>Descargar Tabla Temperaturas</td>
+				</tr>
+				<tr>
+					<td><a href="sensor.php">Descargar archivo exel</a></td><td><a href="temperatura.php">Descargar archivo exel</a></td>
+				</tr>
+
 				</table>
 				<button>Guardar</button> 
 			</div>
