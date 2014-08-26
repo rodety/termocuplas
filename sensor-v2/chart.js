@@ -156,7 +156,16 @@ function init()
 				text: ejex
 			},
 			type: 'datetime',
-			gridLineWidth:0.5
+			gridLineWidth:0.5,
+			events: {
+				setExtremes: function(event)
+				{
+					for(i = 1; i < nsensores+1; i++)
+					{
+						$('#container'+sensores_habilitados[i-1]).highcharts().xAxis[0].setExtremes(event.min,event.max,true);
+					}
+				}
+			}
 		},
 		yAxis: {
 			title: {
